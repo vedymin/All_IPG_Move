@@ -11,6 +11,26 @@ def add_connections():
     connections = conn.get_available_connections()
     ui.choose_session_combo.addItems(connections)
 
+def check_loggged():
+
+    session = ui.choose_session_combo.currentText()
+    conn.open_session(session)
+
+    if conn.check_logged_in(session):
+        print("logged in")
+    else:
+        error_non_logged()
+        print("not logged in")
+
+
+def error_non_logged():
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Warning)
+    msg.setText("You are not logged in here. Log in or choose another session")
+    msg.setWindowTitle("Warning")
+    msg.setStandardButtons(QMessageBox.Ok)
+    msg.show()
+    msg.exec_()
 
 
 
