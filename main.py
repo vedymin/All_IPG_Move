@@ -1,6 +1,8 @@
 from pyas400 import ConnectionManager
 import main_gui
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+
 
 conn = ConnectionManager()
 
