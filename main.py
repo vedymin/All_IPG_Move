@@ -25,6 +25,17 @@ def check_loggged():
         print("not logged in")
 
 
+def start_moving():
+
+    hd_from = ui.from_line_edit.text()
+    hd_to = ui.to_line_edit.text()
+
+
+
+    check_loggged()
+
+
+
 def error_non_logged():
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Warning)
@@ -43,6 +54,7 @@ if __name__ == "__main__":
     ui = main_gui.Ui_MainWindow()
     ui.setupUi(MainWindow)
     ui.refresh_session_button.clicked.connect(add_connections)
+    ui.start_button.clicked.connect(check_loggged)
     add_connections()
     MainWindow.show()
     sys.exit(app.exec_())
