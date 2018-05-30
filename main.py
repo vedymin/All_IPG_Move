@@ -8,45 +8,59 @@ global hd_from
 global hd_to
 
 """Initial settings and Refresh reaction."""
+
+
 def add_connections():
     ui.choose_session_combo.clear()
     connections = conn.get_available_connections()
     ui.choose_session_combo.addItems(connections)
 
+
 """Main functions."""
+
+
 def start_moving():
     global hd_from
     global hd_to
+    global session
+
+    session = ui.choose_session_combo.currentText()
+    conn.open_session(session)
+    conn.set_active_session(session)
 
     hd_from = ui.from_line_edit.text()
     hd_to = ui.to_line_edit.text()
 
-    check_loggged()
-    check_hd()
+    if check_loggged() or check_hd() is False:
+        return
+
+    conn.send_keys("1")
+    conn.enter()
+
 
 """Checking and errors messages."""
-def check_loggged():
-    session = ui.choose_session_combo.currentText()
-    conn.open_session(session)
 
+
+def check_loggged():
     if conn.check_logged_in(session):
         print("logged in")
     else:
         error_msg("You are not logged in here. Log in or choose another session")
         print("not logged in")
+        return False
 
 
 def check_hd():
     global hd_from
     global hd_to
 
-    if not hd_from.isdigit() or hd_to.isdigit():
-        error_msg("One of HD have letters inside.")
-        return
+    # if hd_from.isdigit() or hd_to.isdigit():
+    #     error_msg("One of HD have letters inside.")
+    #     return False
 
     if len(hd_from) < 18 or len(hd_to) < 18:
         error_msg("One of the HD is too short.")
-        return
+        return False
     elif len(hd_from) > 18:
         hd_from = hd_from[-18:len(hd_from)]
         ui.from_line_edit.setText(hd_from)
