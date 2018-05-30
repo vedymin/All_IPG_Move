@@ -7,24 +7,13 @@ conn = ConnectionManager()
 global hd_from
 global hd_to
 
-
+"""Initial settings and Refresh reaction."""
 def add_connections():
     ui.choose_session_combo.clear()
     connections = conn.get_available_connections()
     ui.choose_session_combo.addItems(connections)
 
-
-def check_loggged():
-    session = ui.choose_session_combo.currentText()
-    conn.open_session(session)
-
-    if conn.check_logged_in(session):
-        print("logged in")
-    else:
-        error_msg("You are not logged in here. Log in or choose another session")
-        print("not logged in")
-
-
+"""Main functions."""
 def start_moving():
     global hd_from
     global hd_to
@@ -34,6 +23,17 @@ def start_moving():
 
     check_loggged()
     check_hd()
+
+"""Checking and errors messages."""
+def check_loggged():
+    session = ui.choose_session_combo.currentText()
+    conn.open_session(session)
+
+    if conn.check_logged_in(session):
+        print("logged in")
+    else:
+        error_msg("You are not logged in here. Log in or choose another session")
+        print("not logged in")
 
 
 def check_hd():
