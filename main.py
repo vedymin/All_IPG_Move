@@ -31,11 +31,37 @@ def start_moving():
     hd_from = ui.from_line_edit.text()
     hd_to = ui.to_line_edit.text()
 
-    if check_loggged() or check_hd() is False:
+    if check_loggged() is False or check_hd() is False:
         return
 
-    conn.send_keys("1")
+    conn.esc()
+    conn.send_keys("go hlmu00"),
     conn.enter()
+    conn.send_keys("4")
+    conn.enter()
+    conn.send_keys("2")
+    conn.enter()
+    conn.send_keys(hd_from, 20, 28)
+    conn.enter()
+
+    while conn.get_text(11, 8, 1) != " ":
+        conn.send_keys("20")
+        conn.enter()
+        pcs = conn.get_text(12, 28, 7)
+        conn.send_keys(pcs,16,28)
+        conn.send_keys(hd_to, 17, 34)
+        # conn.set_cursor(18,34),,
+        # conn.tab()
+        conn.send_keys("N", 18, 34)
+        # conn.tab(7)
+        # conn.set_cursor(20,34)
+        conn.send_keys("N", 20, 34)
+        conn.enter()
+        conn.fkey(20)
+        print("break")
+
+    conn.fkey(12,5)
+    return
 
 
 """Checking and errors messages."""
@@ -44,6 +70,7 @@ def start_moving():
 def check_loggged():
     if conn.check_logged_in(session):
         print("logged in")
+        return True
     else:
         error_msg("You are not logged in here. Log in or choose another session")
         print("not logged in")
