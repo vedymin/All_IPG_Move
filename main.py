@@ -14,7 +14,7 @@ def add_connections():
     ui.choose_session_combo.clear()
     connections = conn.get_available_connections()
     ui.choose_session_combo.addItems(connections)
-    ui.choose_session_combo.setCurrentIndex(3)
+    # ui.choose_session_combo.setCurrentIndex(3)
 
 """Main functions."""
 

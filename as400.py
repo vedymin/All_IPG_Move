@@ -41,13 +41,10 @@ class ConnectionManager:
                 return True
 
     def open_session(self, connection_name):
+        self.sessions = {}
         _session = win32com.client.Dispatch("PCOMM.autECLSession")
-        try:
-            _session.SetConnectionByName(connection_name)
-            print("connected to session")
-        except:
-            print("error connection exist")
-
+        _session.SetConnectionByName(connection_name)
+        self.OIA = win32com.client.Dispatch("PCOMM.autECLOIA")
         self.OIA.SetConnectionByName(connection_name)
 
         if not _session.Ready:
