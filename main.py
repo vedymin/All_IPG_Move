@@ -1,4 +1,4 @@
-from pyas400 import ConnectionManager
+from as400 import ConnectionManager
 import main_gui
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
@@ -14,7 +14,7 @@ def add_connections():
     ui.choose_session_combo.clear()
     connections = conn.get_available_connections()
     ui.choose_session_combo.addItems(connections)
-
+    ui.choose_session_combo.setCurrentIndex(3)
 
 """Main functions."""
 
@@ -47,6 +47,15 @@ def start_moving():
     while conn.get_text(11, 8, 1) != " ":
         conn.send_keys("20")
         conn.enter()
+        if conn.get_text(24, 28, 16) == "must be in place":
+            conn.send_keys("14")
+            conn.enter()
+            conn.send_keys("23")
+            conn.enter()
+            conn.fkey(12)
+            conn.send_keys("20")
+            conn.enter()
+
         pcs = conn.get_text(12, 28, 7)
         conn.send_keys(pcs,16,28)
         conn.send_keys(hd_to, 17, 34)
@@ -60,8 +69,14 @@ def start_moving():
         conn.fkey(20)
         print("break")
 
-    conn.fkey(12,5)
+    conn.fkey(12, 5)
+
+    delete_object()
+
     return
+
+def delete_object():
+    conn.sessions = None
 
 
 """Checking and errors messages."""
