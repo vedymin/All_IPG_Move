@@ -14,6 +14,9 @@ def add_connections():
     ui.choose_session_combo.clear()
     connections = conn.get_available_connections()
     ui.choose_session_combo.addItems(connections)
+    ui.from_line_edit.setText('222000000000000010')
+    ui.to_line_edit.setText('000009203008170004')
+
     # ui.choose_session_combo.setCurrentIndex(3)
 
 """Main functions."""
@@ -23,6 +26,8 @@ def start_moving():
     global hd_from
     global hd_to
     global session
+
+    delete_object()
 
     session = ui.choose_session_combo.currentText()
     conn.open_session(session)
@@ -42,7 +47,33 @@ def start_moving():
     conn.send_keys("2")
     conn.enter()
     conn.send_keys(hd_from, 20, 28)
+
+    """ Ckeck if HD is for pick or prepared"""
+    conn.fkey(11)
+    conn.send_keys("Y",13,31)
+    conn.send_keys(" ", 14, 31)
     conn.enter()
+    if conn.get_text(11, 8, 10) != "          ":
+        error_msg("HD have items to pick")
+        conn.fkey(12, 5)
+        return
+
+    conn.enter()
+    conn.fkey(11)
+    conn.send_keys(" ", 13, 31)
+    conn.send_keys("Y", 14, 31)
+    conn.enter()
+    if conn.get_text(11, 8, 10) != "          ":
+        error_msg("HD have prepared")
+        conn.fkey(12, 5)
+        return
+    conn.enter()
+    conn.fkey(11)
+    conn.send_keys(" ", 13, 31)
+    conn.send_keys(" ", 14, 31)
+    conn.enter()
+
+    """ Start moving """
 
     while conn.get_text(11, 8, 1) != " ":
         conn.send_keys("20")
@@ -71,7 +102,7 @@ def start_moving():
 
     conn.fkey(12, 5)
 
-    delete_object()
+
 
     return
 
