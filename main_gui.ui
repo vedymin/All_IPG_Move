@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>210</height>
+    <height>250</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>400</width>
-    <height>210</height>
+    <height>250</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>400</width>
-    <height>210</height>
+    <height>250</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,26 +27,80 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <layout class="QHBoxLayout" name="session_layout">
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="choose_session_label">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="new_hd_check">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>New HD</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="location_label">
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Location:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="location_line_edit"/>
+      </item>
+     </layout>
+    </item>
+    <item row="5" column="0">
+     <layout class="QHBoxLayout" name="to_layout">
+      <item>
+       <widget class="QLabel" name="to_label">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
+          <horstretch>4</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="font">
          <font>
-          <pointsize>11</pointsize>
+          <pointsize>17</pointsize>
          </font>
         </property>
-        <property name="toolTipDuration">
-         <number>-1</number>
-        </property>
         <property name="text">
-         <string>Choose session:</string>
+         <string>To HD:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -54,18 +108,41 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="choose_session_combo"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="refresh_session_button">
-        <property name="text">
-         <string>Refresh list</string>
+       <widget class="QLineEdit" name="to_line_edit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>8</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>15</pointsize>
+         </font>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item row="6" column="0">
+     <widget class="QPushButton" name="start_button">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
      <layout class="QHBoxLayout" name="from_layout">
       <item>
        <widget class="QLabel" name="from_label">
@@ -108,23 +185,26 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
-     <layout class="QHBoxLayout" name="to_layout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="session_layout">
       <item>
-       <widget class="QLabel" name="to_label">
+       <widget class="QLabel" name="choose_session_label">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>4</horstretch>
+          <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="font">
          <font>
-          <pointsize>17</pointsize>
+          <pointsize>11</pointsize>
          </font>
         </property>
+        <property name="toolTipDuration">
+         <number>-1</number>
+        </property>
         <property name="text">
-         <string>To HD:</string>
+         <string>Choose session:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -132,39 +212,16 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="to_line_edit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>8</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>15</pointsize>
-         </font>
+       <widget class="QComboBox" name="choose_session_combo"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="refresh_session_button">
+        <property name="text">
+         <string>Refresh list</string>
         </property>
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="start_button">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>17</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Start</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

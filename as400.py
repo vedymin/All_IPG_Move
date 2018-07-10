@@ -94,10 +94,17 @@ class ConnectionManager:
             temp_session.autECLPS.SendKeys("%s" % key, row, col)
             self.OIA.WaitForInputReady()
 
-    def enter(self):
+    def enter(self, program=None, back=1):
         self.OIA.WaitForInputReady()
         self.send_keys("[enter]")
         self.OIA.WaitForInputReady()
+
+        if program is not None:
+            if self.check(program):
+                return True
+            else:
+                self.fkey(12,back)
+                return False
 
     def set_cursor(self, row, col, connection_name=None):
         self.OIA.WaitForInputReady()
@@ -121,7 +128,7 @@ class ConnectionManager:
             self.send_keys("[tab]")
             self.OIA.WaitForInputReady()
 
-    def fkey(self, key, count=1, connection_name=None):
+    def fkey(self, key, count=1, program=None, back=1, connection_name=None):
         self.OIA.WaitForInputReady()
         temp_session = self.activeSession
         if connection_name is not None:
@@ -132,7 +139,14 @@ class ConnectionManager:
             self.send_keys("[pf{}]".format(key))
             self.OIA.WaitForInputReady()
 
-    def esc(self, count=1, connection_name=None):
+            if program is not None and count==1:
+                if self.check(program):
+                    return True
+                else:
+                    self.fkey(12, back)
+                    return False
+
+    def esc(self, count=1, program=None, connection_name=None):
         self.OIA.WaitForInputReady()
         temp_session = self.activeSession
         if connection_name is not None:
@@ -143,6 +157,40 @@ class ConnectionManager:
             self.send_keys("[attn]")
             time.sleep(1)
             self.OIA.WaitForInputReady()
+
+            if program is not None and count==1:
+                if self.check(program):
+                    return True
+                else:
+                    return False
+
+    def erase(self, row, col, tabs=1, connection_name=None):
+        self.OIA.WaitForInputReady()
+        temp_session = self.activeSession
+        if connection_name is not None:
+            temp_session = self.sessions[connection_name]
+
+        self.send_keys("[eraseeof]")
+
+        for n in range(tabs):
+            self.OIA.WaitForInputReady()
+            self.send_keys("[tab]")
+            self.send_keys("[eraseeof]")
+            self.OIA.WaitForInputReady()
+
+    def check(self, text, row=1, col=2, connection_name=None, timeout=5):
+        self.OIA.WaitForInputReady()
+        temp_session = self.activeSession
+        if connection_name is not None:
+            temp_session = self.sessions[connection_name]
+
+        timeout_start = time.time()
+
+        while time.time() < timeout_start + timeout:
+            if self.get_text(row, col).strip() == text:
+                return True
+
+        return False
 
 # conn = ConnectionManager()
 # d = conn.get_available_connections()

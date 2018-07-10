@@ -2,6 +2,7 @@ from as400 import ConnectionManager
 import main_gui
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import *
 
 conn = ConnectionManager()
 global hd_from
@@ -14,10 +15,11 @@ def add_connections():
     ui.choose_session_combo.clear()
     connections = conn.get_available_connections()
     ui.choose_session_combo.addItems(connections)
-    ui.from_line_edit.setText('222000000000000010')
-    ui.to_line_edit.setText('000009203008170004')
+    # ui.from_line_edit.setText('000000060004548614')
+    # ui.to_line_edit.setText('990000000000000001')
+    #
+    # ui.choose_session_combo.setCurrentText("D")
 
-    # ui.choose_session_combo.setCurrentIndex(3)
 
 """Main functions."""
 
@@ -39,72 +41,122 @@ def start_moving():
     if check_loggged() is False or check_hd() is False:
         return
 
+    """ Go to 4-2 and paste HD"""
+
     conn.esc()
-    conn.send_keys("go hlmu00"),
-    conn.enter()
+    conn.send_keys("GO HLMU00"),
+    if not conn.enter("HLMU00",2):
+        error_msg("Something went wrong! Try again.")
+        return
     conn.send_keys("4")
-    conn.enter()
+    if not conn.enter("HLMU04",3):
+        error_msg("Something went wrong! Try again.")
+        return
     conn.send_keys("2")
-    conn.enter()
+    if not conn.enter("HLGE40",4):
+        error_msg("Something went wrong! Try again.")
+        return
     conn.send_keys(hd_from, 20, 28)
 
     """ Ckeck if HD is for pick or prepared"""
-    conn.fkey(11)
-    conn.send_keys("Y",13,31)
+
+    if not conn.fkey(11, program="HLGE45", back=5):
+        error_msg("Something went wrong! Try again.")
+        return
+
+    conn.send_keys("Y", 13, 31)
     conn.send_keys(" ", 14, 31)
-    conn.enter()
+    if not conn.enter("HLGE41", 5):
+        error_msg("Something went wrong! Try again.")
+        return
     if conn.get_text(11, 8, 10) != "          ":
         error_msg("HD have items to pick")
         conn.fkey(12, 5)
         return
 
-    conn.enter()
-    conn.fkey(11)
+    if not conn.enter("HLGE40",4):
+        error_msg("Something went wrong! Try again.")
+        return
+    if not conn.fkey(11, program="HLGE45", back=5):
+        error_msg("Something went wrong! Try again.")
+        return
     conn.send_keys(" ", 13, 31)
     conn.send_keys("Y", 14, 31)
-    conn.enter()
+    if not conn.enter("HLGE41", 5):
+        error_msg("Something went wrong! Try again.")
+        return
     if conn.get_text(11, 8, 10) != "          ":
         error_msg("HD have prepared")
         conn.fkey(12, 5)
         return
-    conn.enter()
-    conn.fkey(11)
+
+
+    if not conn.enter("HLGE40",4):
+        error_msg("Something went wrong! Try again.")
+        return
+    if not conn.fkey(11, program="HLGE45", back=5):
+        error_msg("Something went wrong! Try again.")
+        return
     conn.send_keys(" ", 13, 31)
     conn.send_keys(" ", 14, 31)
-    conn.enter()
+    if not conn.enter("HLGE41",5):
+        error_msg("Something went wrong! Try again.")
+        return
 
     """ Start moving """
 
-    while conn.get_text(11, 8, 1) != " ":
+    first_done = False   # Flag for checking if HD was created by program. After that next IPG's are moved without
+                         # "New HD" set to "Y"
+
+    while conn.get_text(11, 8, 1) != " ":       # Loop for every IPG line
+
         conn.send_keys("20")
-        conn.enter()
-        if conn.get_text(24, 28, 16) == "must be in place":
+        if not conn.enter("HLGE50", 5):
+            error_msg("Something went wrong! Try again.")
+            return
+        if conn.get_text(24, 28, 16) == "must be in place":  # Changing status of HD to IPL
             conn.send_keys("14")
-            conn.enter()
+            if not conn.enter("HLSTE63", 6):
+                error_msg("Something went wrong! Try again.")
+                return
             conn.send_keys("23")
             conn.enter()
-            conn.fkey(12)
+            if not conn.fkey(12, program="HLGE41", back=5):
+                error_msg("Something went wrong! Try again.")
+                return
             conn.send_keys("20")
-            conn.enter()
+            if not conn.enter("HLGE50", 5):
+                error_msg("Something went wrong! Try again.")
+                return
 
         pcs = conn.get_text(12, 28, 7)
-        conn.send_keys(pcs,16,28)
+        conn.send_keys(pcs, 16, 28)
         conn.send_keys(hd_to, 17, 34)
-        # conn.set_cursor(18,34),,
-        # conn.tab()
-        conn.send_keys("N", 18, 34)
-        # conn.tab(7)
-        # conn.set_cursor(20,34)
-        conn.send_keys("N", 20, 34)
+
+        # Creation of new HD. If checkbox is ticked then for the first IPG line we need to create.
+        # for next lines flag "first_done" is set to true so it is ommited.
+        if ui.new_hd_check.isChecked() and first_done == False:
+            conn.send_keys("Y", 18, 34)
+            conn.erase(18,34,5) # clearing location
+            conn.send_keys(ui.location_line_edit.text(), 19, 34) # location from line_edit
+            first_done = True
+        else:
+            conn.send_keys("N", 18, 34) # with this set to "N" location will be updated by reflex.
+
+        conn.send_keys("N", 20, 34) # label no
+        conn.send_keys("STD",18,75) # carton type
         conn.enter()
         conn.fkey(20)
-        print("break")
+        if not conn.check("HLGE41", timeout=15):
+            error_msg("Something went wrong! Try again.")
+            conn.fkey(12, 5)
+            return
+        # print("break")
 
     conn.fkey(12, 5)
 
-
-
     return
+
 
 def delete_object():
     conn.sessions = None
@@ -159,6 +211,9 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = main_gui.Ui_MainWindow()
     ui.setupUi(MainWindow)
+    ui.location_line_edit.setDisabled(ui.new_hd_check.checkState()==Qt.Unchecked)
+    ui.new_hd_check.stateChanged.connect(lambda state: ui.location_line_edit.setDisabled(state == Qt.Unchecked))
+    ui.location_line_edit.setText("RECV-SC")
     ui.refresh_session_button.clicked.connect(add_connections)
     ui.start_button.clicked.connect(start_moving)
     add_connections()
