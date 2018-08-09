@@ -46,7 +46,7 @@ def start_moving():
 
     # conn.esc()
     # conn.send_keys("GO HLMU00"),
-    if not conn.check("HLMU00"):
+    if not conn.check("HLMU00", timeout=1):
         error_msg("Please go to main menu and train again. Main menu is after Reflex logo.")
         return
     conn.send_keys("4")
