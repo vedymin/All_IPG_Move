@@ -155,7 +155,7 @@ def start_moving():
             return
         # print("break")
 
-    conn.fkey(12, 5)
+    conn.fkey(12, 3)
 
     return
 
