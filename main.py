@@ -44,29 +44,30 @@ def start_moving():
 
     """ Go to 4-2 and paste HD"""
 
-    conn.esc()
-    conn.send_keys("GO HLMU00"),
-    if not conn.enter("HLMU00",2):
+    # conn.esc()
+    # conn.send_keys("GO HLMU00"),
+    if not conn.check("HLMU00"):
+        error_msg("Please go to main menu and train again. Main menu is after Reflex logo.")
         return
     conn.send_keys("4")
-    if not conn.enter("HLMU04",3):
+    if not conn.enter("HLMU04", 1):
         err()
         return
     conn.send_keys("2")
-    if not conn.enter("HLGE40",4):
+    if not conn.enter("HLGE40", 2):
         err()
         return
     conn.send_keys(hd_from, 20, 28)
 
     """ Ckeck if HD is for pick or prepared"""
 
-    if not conn.fkey(11, program="HLGE45", back=5):
+    if not conn.fkey(11, program="HLGE45", back=3):
         err()
         return
 
     conn.send_keys("Y", 13, 31)
     conn.send_keys(" ", 14, 31)
-    if not conn.enter("HLGE41", 5):
+    if not conn.enter("HLGE41", 3):
         err()
         return
     if conn.get_text(11, 8, 10) != "          ":
@@ -74,15 +75,15 @@ def start_moving():
         conn.fkey(12, 5)
         return
 
-    if not conn.enter("HLGE40",4):
+    if not conn.enter("HLGE40", 4):
         err()
         return
-    if not conn.fkey(11, program="HLGE45", back=5):
+    if not conn.fkey(11, program="HLGE45", back=3):
         err()
         return
     conn.send_keys(" ", 13, 31)
     conn.send_keys("Y", 14, 31)
-    if not conn.enter("HLGE41", 5):
+    if not conn.enter("HLGE41", 3):
         err()
         return
     if conn.get_text(11, 8, 10) != "          ":
@@ -90,16 +91,15 @@ def start_moving():
         conn.fkey(12, 5)
         return
 
-
-    if not conn.enter("HLGE40",4):
+    if not conn.enter("HLGE40", 2):
         err()
         return
-    if not conn.fkey(11, program="HLGE45", back=5):
+    if not conn.fkey(11, program="HLGE45", back=3):
         err()
         return
     conn.send_keys(" ", 13, 31)
     conn.send_keys(" ", 14, 31)
-    if not conn.enter("HLGE41",5):
+    if not conn.enter("HLGE41", 3):
         err()
         return
 
@@ -115,16 +115,16 @@ def start_moving():
         # time.sleep(5)
         if conn.get_text(24, 28, 16) == "must be in place":  # Changing status of HD to IPL
             conn.send_keys("14")
-            if not conn.enter("HLSTE63", 6):
+            if not conn.enter("HLST63", 4):
                 err()
                 return
             conn.send_keys("23")
             conn.enter()
-            if not conn.fkey(12, program="HLGE41", back=5):
+            if not conn.fkey(12, program="HLGE41", back=3):
                 err()
                 return
             conn.send_keys("20")
-            if not conn.enter("HLGE50", 5):
+            if not conn.enter("HLGE50", 3):
                 err()
                 return
         elif not conn.enter("HLGE50", 3):
